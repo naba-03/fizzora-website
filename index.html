@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#044e3b">
+  <meta name="description" content="Fizzora — a refreshing fictional soda brand experience. Zero sugar, big personality. Interactive portfolio concept.">
+  <title>Fizzora® — Pure Zero Refreshment | Interactive Concept</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Inter:wght@400;500;700&family=Manrope:wght@400;500;600;700&family=Galada&display=swap" rel="stylesheet">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --bg-inner:#0b8a78; --bg-mid:#044e3b; --bg-outer:#011411;
+      --text-color:#fff; --muted-color:rgba(255,255,255,.74);
+      --glass-bg:rgba(255,255,255,.055); --glass-border:rgba(255,255,255,.16);
+      --accent:#fbcfe8; --ink:#011d17; --font-heading:'Galada',cursive;
+    }
+    * {box-sizing:border-box;margin:0;padding:0}
+    html,body {width:100%;height:100%;overflow:hidden}
+    body {font-family:'Inter',sans-serif;color:#fff;
+      background:radial-gradient(circle at 51% 45%,var(--bg-inner) 0%,var(--bg-mid) 49%,var(--bg-outer) 100%);
+      transition:background 1.2s cubic-bezier(.4,0,.2,1);}
+    body.blue-theme {--bg-inner:#0b4f8a;--bg-mid:#04294e;--bg-outer:#010c14;--ink:#061a32}
+    button,a,input,textarea{font:inherit}
+    button{cursor:pointer}
+    button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    #bubbles-container,.light-beams,.noise{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+    #bubbles-container{z-index:2}
+    .noise{z-index:2;opacity:.14;background-image:url('data:image/svg+xml,%3Csvg viewBox=%220 0 160 160%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%22.12%22/%3E%3C/svg%3E')}
+    .light-beams{z-index:0;background:radial-gradient(ellipse at 48% 48%,rgba(158,255,224,.16),transparent 41%),linear-gradient(115deg,transparent 40%,rgba(255,255,255,.025) 50%,transparent 58%)}
+    .bubble-img{position:absolute;pointer-events:none;user-select:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))}
+    @keyframes floatUpImg{0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0}10%{opacity:.4}90%{opacity:.4}100%{transform:translateY(-110vh) translateX(30px) rotate(360deg);opacity:0}}
+    .header{display:flex;justify-content:space-between;align-items:center;padding:1.8rem 4%;position:fixed;top:0;left:0;width:100%;z-index:150;gap:1.5rem}
+    .logo{color:#fff;text-decoration:none;display:flex;align-items:center;gap:.55rem;font-weight:700;font-family:'Outfit',sans-serif;font-size:1.55rem;letter-spacing:-.07em;white-space:nowrap;line-height:1}
+    .logo span span{color:var(--accent)}
+    .brandmark{height:37px;width:37px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.08);border-radius:50%;box-shadow:inset 0 0 12px rgba(255,255,255,.1)}
+    .nav{display:flex;gap:.18rem;padding:.42rem;border-radius:100px;white-space:nowrap}
+    .glass{background:rgba(255,255,255,.085);border:1px solid rgba(255,255,255,.19);box-shadow:0 8px 32px rgba(0,0,0,.1),inset 0 0 0 1px rgba(255,255,255,.055);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .nav-item{font-family:'Manrope',sans-serif;color:var(--muted-color);font-size:.82rem;font-weight:600;padding:.58rem 1.15rem;border:0;background:transparent;border-radius:100px;text-decoration:none;transition:background .3s,color .3s}
+    .nav-item:is(:hover,.active){background:var(--accent);color:var(--ink)}
+    .contact-btn{background:rgba(0,0,0,.43);border:1px solid rgba(255,255,255,.09);border-radius:100px;color:white;padding:.88rem 1.85rem;font-weight:700;font-size:.84rem;white-space:nowrap;transition:transform .25s,background .25s}
+    .contact-btn:hover,.primary-btn:hover{transform:translateY(-3px);background:rgba(0,0,0,.66)}
+    .hero{height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;padding:5rem 4% 0;position:relative}
+    .hero-content{width:100%;height:100%;position:relative;display:flex;justify-content:space-between;align-items:stretch}
+    .hero-left{display:flex;flex-direction:column;gap:2rem;height:100%;padding:5.1rem 0 2.6rem;position:relative;z-index:105;pointer-events:none}
+    .hero-left>*{pointer-events:auto}
+    .main-title,.side-title{font-family:var(--font-heading);font-size:clamp(5rem,10vw,12rem);line-height:.84;font-weight:400;letter-spacing:-.035em;white-space:nowrap;color:white;filter:drop-shadow(0 6px 16px rgba(0,0,0,.05))}
+    .main-title{margin-left:-.1em}
+    .side-title{align-self:flex-end;text-align:right;font-size:clamp(4.4rem,7.2vw,9rem)}
+    .description{max-width:350px;color:var(--muted-color);font-size:1rem;line-height:1.75;text-wrap:pretty}
+    .eyebrow{font:700 .68rem 'Manrope',sans-serif;letter-spacing:.27em;text-transform:uppercase;color:#d4ffe9;margin-bottom:-.85rem}
+    .cta-group{display:flex;align-items:center;gap:1rem}
+    .primary-btn{display:flex;align-items:center;gap:1.5rem;background:rgba(0,0,0,.48);color:white;border:none;padding:.43rem .43rem .43rem 1.55rem;border-radius:100px;font-weight:700;font-size:.9rem;width:fit-content;transition:transform .3s,background .3s}
+    .plus-icon{width:39px;height:39px;border-radius:50%;background:var(--accent);color:var(--ink);display:grid;place-items:center;font-size:1.4rem;font-weight:900;line-height:1}
+    .award-badge{display:flex;align-items:center;gap:.9rem;margin-top:auto}
+    .award-icon{width:48px;height:48px;display:grid;place-items:center;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px}
+    .award-text{display:flex;flex-direction:column;gap:5px}
+    .award-title{font-size:.66rem;letter-spacing:.15em;color:var(--muted-color)}
+    .award-subtitle{font-size:.76rem;font-weight:700}
+    .hero-right{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;text-align:right;height:100%;padding:5.8rem 0 3.2rem;z-index:105;width:420px;pointer-events:none}
+    .product-carousel{display:flex;flex-direction:column;align-items:flex-end;gap:1.05rem;pointer-events:auto}
+    .carousel-top{font:700 .64rem 'Manrope',sans-serif;letter-spacing:.23em;text-transform:uppercase;color:var(--muted-color);margin-bottom:.15rem}
+    .carousel-cards{display:flex;gap:1rem}
+    .card{width:134px;min-height:173px;border-radius:27px;border:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:4.4rem .85rem 1rem;gap:.65rem;position:relative;color:white;text-align:center;transition:transform .35s,border-color .35s,background .35s}
+    .card:hover{transform:translateY(-4px);background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.45)}
+    .card.active{border-color:var(--accent);box-shadow:inset 0 0 0 1px rgba(251,207,232,.12)}
+    .card img{position:absolute;top:-1.45rem;left:50%;transform:translateX(-50%);width:132px;height:137px;object-fit:contain;filter:drop-shadow(0 14px 15px rgba(0,0,0,.4));transition:transform .5s;pointer-events:none}
+    .card:hover img{transform:translateX(-50%) translateY(-16px) rotate(-9deg) scale(1.08)}
+    .card-info{display:flex;flex-direction:column;gap:.26rem;font-size:.72rem;line-height:1.3;z-index:1}
+    .card-info span:first-child{font-weight:700}
+    .card-info span:last-child{color:var(--muted-color)}
+    .card .flavor-icon{display:none;position:absolute;top:-1.7rem;left:50%;transform:translateX(-50%);width:70px;height:114px;border-radius:15px 15px 20px 20px;background:linear-gradient(90deg,#05291f,#1ec7a1 22%,#0c8168 63%,#034e45);box-shadow:10px 14px 16px rgba(0,0,0,.28);padding:45px 4px 0;text-align:center;font:900 .65rem 'Outfit',sans-serif}
+    .card .flavor-icon::before{content:'';position:absolute;top:-4px;left:4%;width:92%;height:10px;border-radius:50%;background:linear-gradient(#e4e4e4,#8baba5)}
+    .card .flavor-icon.blue{background:linear-gradient(90deg,#0b2055,#2981e2 23%,#18509c 67%,#081944)}
+    .card img.image-error{display:none}.card img.image-error + .flavor-icon{display:block}
+    .carousel-nav{display:flex;gap:.65rem}
+    .nav-arrow{width:37px;height:37px;display:grid;place-items:center;border:1px solid var(--glass-border);background:var(--glass-bg);color:white;border-radius:50%;font-size:1.15rem;transition:background .25s,transform .25s}
+    .nav-arrow:hover{background:rgba(255,255,255,.14);transform:scale(1.08)}
+    .hero-center{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;pointer-events:none;z-index:45;opacity:0;animation:fadeIn 1.5s ease-out .3s forwards,float 6s ease-in-out infinite}
+    .product-glow{position:absolute;left:50%;top:48%;width:min(59vw,680px);height:min(60vh,610px);border-radius:50%;background:radial-gradient(circle,rgba(65,225,185,.18),rgba(28,180,135,.07) 44%,transparent 70%);transform:translate(-50%,-50%);filter:blur(7px);pointer-events:none}
+    .main-product-3d{position:absolute;left:50%;top:50%;width:80vw;height:80vh;transform:translate(-50%,-50%) rotate(25deg);outline:none;--progress-bar-color:transparent;--poster-color:transparent;pointer-events:auto;z-index:2}
+    .css-can{position:absolute;left:50%;top:49%;width:clamp(150px,19vw,268px);height:clamp(280px,49vh,470px);transform:translate(-50%,-50%) rotate(-14deg) perspective(800px) rotateY(var(--can-tilt-x,0deg)) rotateX(var(--can-tilt-y,0deg));border-radius:18% 18% 19% 19% / 4% 4% 7% 7%;background:linear-gradient(90deg,#043329 0%,#087d65 10%,#22b58e 24%,#1db88f 45%,#0b836b 65%,#08483f 87%,#031913 100%);border:1px solid rgba(255,255,255,.32);box-shadow:inset -25px 0 23px rgba(0,0,0,.3),inset 13px 0 16px rgba(255,255,255,.18),21px 40px 47px rgba(0,0,0,.33);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;z-index:1;pointer-events:none;overflow:visible;transition:background .6s}
+    .css-can:before{content:'';position:absolute;left:-1%;top:-3%;height:6%;width:102%;border-radius:50%;background:linear-gradient(#fff,#cbd9d6 45%,#748681 80%,#d4e0dd);box-shadow:0 2px 3px rgba(0,0,0,.3)}
+    .css-can:after{content:'';position:absolute;left:0;bottom:-2%;width:100%;height:5%;border-radius:50%;background:linear-gradient(#4f8980,#c3d0cc 55%,#4a716d);box-shadow:0 3px 3px rgba(0,0,0,.25)}
+    .can-label{font:900 clamp(2.4rem,5.4vw,5.6rem)/.8 'Outfit',sans-serif;text-align:center;letter-spacing:-.11em;color:#fff;transform:rotate(-7deg);text-shadow:0 3px 6px rgba(0,0,0,.18)}
+    .can-label span{display:block;color:#fbcfe8}
+    .can-micro{margin-top:1.9rem;font:800 clamp(.56rem,.9vw,.85rem) 'Manrope',sans-serif;letter-spacing:.22em;color:rgba(255,255,255,.89)}
+    .can-bottom{position:absolute;bottom:13%;font:900 clamp(.8rem,1.5vw,1.4rem) 'Outfit',sans-serif;letter-spacing:.14em}
+    .blue-theme .css-can{background:linear-gradient(90deg,#0a204b,#174dae 15%,#3b9fe4 31%,#1164bf 52%,#0c377c 84%,#07152c)}
+    .hero-center.model-ready .css-can{display:none}
+    @keyframes fadeIn{to{opacity:1}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+    .leaves-container,.berries-container,.berries-container-bg{position:absolute;inset:0;pointer-events:none;transition:transform .1s ease-out}
+    .leaves-container{z-index:5}
+    .berries-container-bg{z-index:11}
+    .berries-container{z-index:110}
+    .leaf,.berry{position:absolute;pointer-events:none;filter:drop-shadow(0 10px 20px rgba(0,0,0,.25));will-change:transform;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+    .leaf{width:70px;height:70px;z-index:1;opacity:.68}
+    .l1{top:11%;left:15%;width:55px;height:55px}.l2{top:43%;left:79%;width:135px;height:135px;opacity:.4}.l3{top:70%;left:74%;width:85px;height:85px}.l4{top:84%;left:19%;width:110px;height:110px;opacity:.4}
+    .berry{width:120px;height:120px}
+    .b1{top:25%;left:30%;width:220px;height:220px}.b2{top:60%;left:42%;width:100px;height:100px}.b3{top:30%;left:62%;width:250px;height:250px}.b4{top:15%;left:48%;width:140px;height:140px}.b5{top:75%;left:20%;width:120px;height:120px}.b6{top:45%;left:75%;width:180px;height:180px}.b7{top:15%;left:40%;width:80px;height:80px;opacity:.7}.b8{top:50%;left:55%;width:70px;height:70px;opacity:.6}.b9{top:80%;left:35%;width:75px;height:75px;opacity:.7}
+    .berry model-viewer,.leaf model-viewer{display:block;width:100%;height:100%;pointer-events:none;--progress-bar-color:transparent;--poster-color:transparent}
+    .fruit-placeholder,.leaf-placeholder{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(2rem,5vw,5.8rem);transform:rotate(-20deg);user-select:none;pointer-events:none}
+    .fruit-placeholder{filter:drop-shadow(0 8px 7px rgba(0,0,0,.3))}
+    .leaf-placeholder{font-size:clamp(1.7rem,3vw,3.1rem)}
+    .model-loaded>.fruit-placeholder,.model-loaded>.leaf-placeholder{display:none}
+    .berry.no-animation{animation:none!important}
+    .mini-footer{position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.42);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;z-index:125;white-space:nowrap;pointer-events:none}
+    .dialog-backdrop{position:fixed;inset:0;background:rgba(0,11,14,.68);backdrop-filter:blur(12px);z-index:400;display:grid;place-items:center;padding:1rem;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+    .dialog-backdrop.open{opacity:1;visibility:visible}
+    .dialog{position:relative;width:min(100%,480px);padding:2.1rem;background:linear-gradient(140deg,rgba(13,68,64,.97),rgba(5,26,37,.97));border:1px solid rgba(255,255,255,.22);border-radius:29px;box-shadow:0 30px 70px rgba(0,0,0,.38)}
+    .dialog-close{position:absolute;right:1.25rem;top:1.1rem;background:rgba(255,255,255,.1);border:0;color:#fff;border-radius:50%;width:36px;height:36px;font-size:1.45rem}
+    .dialog-kicker{font:700 .7rem 'Manrope',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#fbcfe8;margin-bottom:.65rem}
+    .dialog h2{font:400 3rem/.97 var(--font-heading);margin-bottom:1rem}
+    .dialog p{color:rgba(255,255,255,.8);line-height:1.7;font-size:.92rem}
+    .dialog-actions{margin-top:1.45rem;display:flex;flex-wrap:wrap;gap:.7rem}
+    .dialog-action{background:var(--accent);color:#092a2d;border:0;border-radius:100px;padding:.85rem 1.2rem;font-weight:700}
+    .dialog-small{display:block;font-size:.72rem;color:rgba(255,255,255,.54);margin-top:1.15rem}
+    .dialog label{display:block;margin:.9rem 0 .4rem;font-size:.76rem;font-weight:700;color:#d7eee9}
+    .dialog input,.dialog textarea{width:100%;padding:.8rem 1rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.19);border-radius:12px;color:#fff;resize:vertical}
+    .dialog input::placeholder,.dialog textarea::placeholder{color:rgba(255,255,255,.45)}
+    .dialog-feedback{color:#fbcfe8!important;margin-top:.8rem;font-size:.85rem!important;min-height:1.6rem}
+    @keyframes shine{from{transform:translateX(-100%) rotate(45deg)}to{transform:translateX(200%) rotate(45deg)}}
+    @media(max-width:1200px){.main-product-3d{width:100vw;height:69vh;top:43%}.hero-left{padding-top:5.2rem;gap:1.7rem}.hero-right{padding-top:5.6rem;width:310px}.main-title{font-size:clamp(4.3rem,8vw,7rem)}.side-title{font-size:clamp(3.3rem,6vw,6rem)}.description{font-size:.91rem;max-width:275px}.card{width:116px;min-height:155px}.card img{width:113px;height:120px}.css-can{width:215px;height:375px}}
+    @media(max-width:850px){.header{padding:1.3rem 5%}.nav{display:none}.contact-btn{padding:.75rem 1.3rem}.hero{padding:4.8rem 5% 0}.main-title{font-size:clamp(4.3rem,12vw,6rem)}.side-title{font-size:3.6rem}.hero-right{width:auto;padding:6rem 0 3rem}.hero-left{padding:4.1rem 0 2.3rem}.description{font-size:.89rem;max-width:245px}.award-badge{display:none}.card{width:95px;min-height:130px;border-radius:21px;padding:.85rem .55rem}.card img{width:83px;height:100px;top:-2.2rem}.card .flavor-icon{transform:translateX(-50%) scale(.75);top:-1.8rem}.carousel-top{display:none}.carousel-cards{gap:.55rem}.hero-center .main-product-3d{width:100vw;height:64vh;top:52%}.css-can{left:53%;top:53%;width:200px;height:330px}.b1{left:23%}.b3{left:56%}.b6{left:82%}}
+    @media(max-width:600px){.header{padding:1.05rem 5.5%;gap:.7rem}.logo{font-size:1.27rem}.brandmark{width:32px;height:32px}.contact-btn{padding:.67rem .88rem;font-size:.7rem}.hero{padding:4.7rem 5.5% 0}.hero-content{display:block}.hero-left{height:auto;gap:1rem;padding:1.6rem 0 0}.eyebrow{font-size:.54rem;margin-bottom:-.35rem}.main-title{font-size:clamp(3.85rem,16.8vw,6.6rem);line-height:.81}.description{font-size:.78rem;line-height:1.55;max-width:270px}.description br{display:none}.cta-group{margin-top:.1rem}.primary-btn{font-size:.77rem;padding:.3rem .3rem .3rem 1.1rem;gap:1rem}.plus-icon{width:31px;height:31px}.hero-center{inset:0}.hero-center .main-product-3d{width:105vw;height:52vh;top:56%;transform:translate(-50%,-50%) rotate(17deg)}.css-can{left:50%;top:56%;height:min(37vh,310px);width:min(36vw,170px)}.can-label{font-size:2.65rem}.can-micro{font-size:.52rem;margin-top:1.1rem}.can-bottom{font-size:.83rem}.hero-right{position:absolute;bottom:1.7rem;left:0;right:0;height:auto;width:100%;display:flex;flex-direction:row;align-items:flex-end;justify-content:flex-end;padding:0;z-index:130}.product-carousel{gap:.6rem;align-items:flex-end}.carousel-cards{gap:.5rem}.card{width:100px;min-height:116px;padding:.7rem .3rem .65rem;border-radius:18px}.card img{width:80px;height:87px;top:-1.8rem}.card-info{font-size:.59rem}.carousel-nav{gap:.4rem}.nav-arrow{width:30px;height:30px;font-size:.9rem}.side-title{position:absolute;left:0;bottom:4.7rem;text-align:left;font-size:clamp(2.25rem,8.8vw,3.65rem);line-height:.87;max-width:175px;white-space:normal}.mini-footer{bottom:.7rem;font-size:.47rem}.berry{opacity:.8}.b1{top:38%;left:3%;width:90px;height:90px}.b2{top:59%;left:14%;width:64px;height:64px}.b3{top:33%;left:79%;width:100px;height:100px}.b4{top:31%;left:50%;width:70px;height:70px}.b5{top:72%;left:7%;width:75px;height:75px}.b6{top:65%;left:84%;width:95px;height:95px}.b7,.b8,.b9{width:50px;height:50px}.l1,.l2,.l3,.l4{width:43px;height:43px}.dialog{padding:1.6rem}.dialog h2{font-size:2.45rem}}
+    @media(max-width:380px){.description{max-width:205px}.side-title{bottom:5.8rem;font-size:2.1rem}.card{width:87px}.hero-right{bottom:1.8rem}.main-title{font-size:3.7rem}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <div class="light-beams" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div id="bubbles-container" aria-hidden="true"></div>
+  <header class="header">
+    <a href="#" class="logo" aria-label="Fizzora home" id="home-link">
+      <span class="brandmark"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.6"/><path d="M12 5.5V18.5M5.5 12H18.5" stroke="#fbcfe8" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="3" fill="#fbcfe8"/></svg></span>
+      <span>fizzora<span>®</span></span>
+    </a>
+    <nav class="nav glass" aria-label="Main menu">
+      <a class="nav-item active" href="#" data-info="home">Home</a>
+      <a class="nav-item" href="#ingredients" data-info="ingredients">Ingredients</a>
+      <a class="nav-item" href="#taste" data-info="taste">Taste</a>
+      <a class="nav-item" href="#eco" data-info="eco">Eco</a>
+      <a class="nav-item" href="#reviews" data-info="reviews">Reviews</a>
+    </nav>
+    <button class="contact-btn" id="contact-button">Contact Us &nbsp; ↗</button>
+  </header>
+
+  <main class="hero" id="home">
+    <div class="hero-content">
+      <div class="leaves-container" id="leaves" aria-hidden="true">
+        <div class="leaf l1"><span class="leaf-placeholder">🍃</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/leaves.glb" environment-image="neutral" exposure="1.0" interaction-prompt="none" camera-orbit="45deg 75deg 105%"></model-viewer></div>
+        <div class="leaf l2"><span class="leaf-placeholder">🍃</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/leaves.glb" environment-image="neutral" exposure="1.0" interaction-prompt="none" camera-orbit="-30deg 60deg 105%"></model-viewer></div>
+        <div class="leaf l3"><span class="leaf-placeholder">🍃</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/leaves.glb" environment-image="neutral" exposure="1.0" interaction-prompt="none" camera-orbit="120deg 85deg 105%"></model-viewer></div>
+        <div class="leaf l4"><span class="leaf-placeholder">🍃</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/leaves.glb" environment-image="neutral" exposure="1.0" interaction-prompt="none" camera-orbit="10deg 45deg 105%"></model-viewer></div>
+      </div>
+
+      <section class="hero-left" aria-label="Fizzora introduction">
+        <span class="eyebrow">Nothing extra. Everything fresh.</span>
+        <h1 class="main-title large-animation-1"><span class="outline">Pure</span><br>Zero</h1>
+        <p class="description">Unleash the crisp taste of zero sugar.<br> Refreshment redefined in every bubble —<br> all in one sleek design.</p>
+        <div class="cta-group"><button class="primary-btn" id="shop-button">Shop Now <span class="plus-icon" aria-hidden="true">+</span></button></div>
+        <div class="award-badge"><span class="award-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15L15 18L19 14M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="award-text"><span class="award-title">ORIGINAL BRAND CONCEPT</span><span class="award-subtitle">INTERACTIVE PRODUCT EXPERIENCE · 2026</span></div></div>
+      </section>
+
+      <div class="berries-container-bg" id="berries-background" aria-hidden="true">
+        <div class="berry b7"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.0" interaction-prompt="none" camera-orbit="-20deg 110deg 105%"></model-viewer></div>
+        <div class="berry b8"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.0" interaction-prompt="none" camera-orbit="160deg 45deg 105%"></model-viewer></div>
+        <div class="berry b9"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.0" interaction-prompt="none" camera-orbit="45deg 20deg 105%"></model-viewer></div>
+      </div>
+
+      <div class="hero-center" id="hero-center" aria-hidden="true">
+        <div class="product-glow"></div>
+        <div class="css-can" id="css-can"><div class="can-label">fizz<span>ora.</span></div><div class="can-micro">PURE · ZERO · FRESH</div><div class="can-bottom">0 SUGAR</div></div>
+        <model-viewer id="product-model" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/deit_soda2.glb" alt="Fizzora concept soda can" camera-controls disable-zoom shadow-intensity="0" environment-image="neutral" exposure="1.5" interaction-prompt="none" camera-orbit="0deg 90deg 380%" field-of-view="30deg" class="main-product-3d" loading="eager"></model-viewer>
+      </div>
+
+      <div class="berries-container" id="berries-foreground" aria-hidden="true">
+        <div class="berry b1"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.2" interaction-prompt="none" camera-orbit="45deg 120deg 105%"></model-viewer></div>
+        <div class="berry b2"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.2" interaction-prompt="none" camera-orbit="-120deg 45deg 105%"></model-viewer></div>
+        <div class="berry b3"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.2" interaction-prompt="none" camera-orbit="200deg 90deg 105%"></model-viewer></div>
+        <div class="berry b4"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.2" interaction-prompt="none" camera-orbit="10deg 20deg 105%"></model-viewer></div>
+        <div class="berry b5"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.2" interaction-prompt="none" camera-orbit="-45deg 160deg 105%"></model-viewer></div>
+        <div class="berry b6"><span class="fruit-placeholder">🍒</span><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb" environment-image="neutral" exposure="1.2" interaction-prompt="none" camera-orbit="80deg 75deg 105%"></model-viewer></div>
+      </div>
+
+      <section class="hero-right" aria-label="Choose your Fizzora flavor">
+        <div class="product-carousel">
+          <span class="carousel-top">Select your fresh</span>
+          <div class="carousel-cards" role="group" aria-label="Available flavors">
+            <button class="card active" data-flavor="classic" aria-label="Choose Diet Classic" aria-pressed="true"><img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/Green%20Soda.png" alt="Green Diet Classic can"><span class="flavor-icon">CLASSIC</span><span class="card-info"><span>Diet Classic</span><span>$2.99</span></span></button>
+            <button class="card" data-flavor="blue" aria-label="Choose Zero Lime" aria-pressed="false"><img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/Blue%20Soda.png" alt="Blue Zero Lime can" style="filter:brightness(.85) drop-shadow(0 14px 15px rgba(0,0,0,.35))"><span class="flavor-icon blue">ZERO LIME</span><span class="card-info"><span>Zero Lime</span><span>$2.99</span></span></button>
+          </div>
+          <div class="carousel-nav"><button class="nav-arrow" id="prev-flavor" aria-label="Previous flavor">←</button><button class="nav-arrow" id="next-flavor" aria-label="Next flavor">→</button></div>
+        </div>
+        <h2 class="side-title large-animation-1"><span class="outline">Refreshingly</span><br>Clean</h2>
+      </section>
+    </div>
+    <div class="mini-footer">A fictional brand · Website portfolio concept</div>
+  </main>
+
+  <svg style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" aria-hidden="true"><filter id="frosted"><feTurbulence type="fractalNoise" baseFrequency="0.0125" numOctaves="3" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="80" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+  <div style="display:none" aria-hidden="true"><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/blueberry.glb"></model-viewer><model-viewer src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"></model-viewer></div>
+
+  <div class="dialog-backdrop" id="dialog-backdrop" aria-hidden="true"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-heading"><button class="dialog-close" id="dialog-close" aria-label="Close dialog">×</button><div class="dialog-kicker" id="dialog-kicker">THE FIZZORA EXPERIENCE</div><h2 id="dialog-heading">Refreshingly simple.</h2><div id="dialog-body"><p>Explore a little more of what makes our zero-sugar soda so special.</p></div><div class="dialog-actions" id="dialog-actions"></div><div class="dialog-small">Fizzora is a fictional brand. This interactive website is a design portfolio demonstration, not an actual storefront.</div></div></div>
+
+  <script>
+    // Portfolio sample: all UI, effects and interactions live in this one file.
+    const ASSET_BASE_URL = 'https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d';
+    const CHERRY_GLB = ASSET_BASE_URL + '/cherry.glb';
+    const BLUEBERRY_GLB = ASSET_BASE_URL + '/blueberry.glb';
+    const GREEN_BASE_COLOR_JPG = ASSET_BASE_URL + '/green%20base%20color.jpg';
+    const BLUE_BASE_COLOR_JPG = ASSET_BASE_URL + '/blue%20base%20color.jpg';
+    const BUBBLE_PNG = ASSET_BASE_URL + '/bubble.png';
+    const modelViewer = document.querySelector('#product-model');
+    const berriesFG = document.querySelector('.berries-container');
+    const berriesBG = document.querySelector('.berries-container-bg');
+    const leavesBG = document.querySelector('.leaves-container');
+    const allBerries = [...document.querySelectorAll('.berry')];
+    const cards = [...document.querySelectorAll('.card')];
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let isSwitching = false, switchSpin = 0, blueTexture = null, greenTexture = null;
+    let currentFlavor = 'classic';
+
+    // Model fallbacks: 3D when online; tasteful CSS/emoji equivalents if an external asset fails.
+    document.querySelectorAll('.berry model-viewer, .leaf model-viewer').forEach(mv => {
+      mv.addEventListener('load', () => mv.parentElement.classList.add('model-loaded'));
+      mv.addEventListener('error', () => mv.parentElement.classList.remove('model-loaded'));
+    });
+    document.querySelectorAll('.card img').forEach(img => img.addEventListener('error', () => img.classList.add('image-error')));
+    modelViewer.addEventListener('load', async () => {
+      document.querySelector('#hero-center').classList.add('model-ready');
+      try {
+        blueTexture = await modelViewer.createTexture(BLUE_BASE_COLOR_JPG);
+        greenTexture = await modelViewer.createTexture(GREEN_BASE_COLOR_JPG);
+        if (modelViewer.model) {
+          const material = modelViewer.model.materials[0];
+          if (material && material.pbrMetallicRoughness.baseColorTexture) {
+            material.pbrMetallicRoughness.baseColorTexture.setTexture(blueTexture);
+            await new Promise(r => requestAnimationFrame(r));
+            material.pbrMetallicRoughness.baseColorTexture.setTexture(greenTexture);
+          }
+        }
+      } catch(e) { console.warn('Optional texture preload unavailable:', e); }
+    });
+    modelViewer.addEventListener('error', () => document.querySelector('#hero-center').classList.remove('model-ready'));
+
+    function setFlavorTexture(flavor) {
+      const texture = flavor === 'blue' ? blueTexture : greenTexture;
+      if (modelViewer.model && texture) {
+        modelViewer.model.materials.forEach(material => {
+          if (material.pbrMetallicRoughness?.baseColorTexture) {
+            material.pbrMetallicRoughness.baseColorTexture.setTexture(texture);
+          }
+        });
+      }
+    }
+    cards.forEach(card => card.addEventListener('click', () => switchFlavor(card.dataset.flavor)));
+    document.querySelector('#prev-flavor').addEventListener('click', () => switchFlavor(currentFlavor === 'classic' ? 'blue' : 'classic'));
+    document.querySelector('#next-flavor').addEventListener('click', () => switchFlavor(currentFlavor === 'classic' ? 'blue' : 'classic'));
+
+    function applyTheme(flavor) {
+      const body = document.body;
+      const targetColors = flavor === 'blue' ? {inner:'#0b4f8a',mid:'#04294e',outer:'#010c14'} : {inner:'#0b8a78',mid:'#044e3b',outer:'#011411'};
+      body.classList.toggle('blue-theme', flavor === 'blue');
+      if (window.gsap && !reducedMotion) {
+        gsap.to(body, {'--bg-inner':targetColors.inner,'--bg-mid':targetColors.mid,'--bg-outer':targetColors.outer,duration:1.5,ease:'power2.inOut'});
+      } else {
+        body.style.setProperty('--bg-inner', targetColors.inner);
+        body.style.setProperty('--bg-mid', targetColors.mid);
+        body.style.setProperty('--bg-outer', targetColors.outer);
+      }
+    }
+    async function switchFlavor(flavor) {
+      if(isSwitching || flavor === currentFlavor) return;
+      isSwitching = true; currentFlavor = flavor;
+      cards.forEach(c => {const active = c.dataset.flavor === flavor; c.classList.toggle('active',active); c.setAttribute('aria-pressed',String(active));});
+      applyTheme(flavor);
+      if (window.gsap && !reducedMotion) {
+        const spinObj = {val:0,blur:0};
+        gsap.to(spinObj, {val:360,blur:15,duration:.6,ease:'power2.in',onUpdate:()=>{switchSpin=spinObj.val;modelViewer.style.filter=`blur(${spinObj.blur}px)`;document.querySelector('#css-can').style.filter=`blur(${spinObj.blur}px)`;},onComplete:()=>{
+          setFlavorTexture(flavor);
+          gsap.to(spinObj, {val:720,blur:0,duration:1.5,ease:'back.out(0.7)',onUpdate:()=>{switchSpin=spinObj.val;modelViewer.style.filter=`blur(${spinObj.blur}px)`;document.querySelector('#css-can').style.filter=`blur(${spinObj.blur}px)`;},onComplete:()=>{switchSpin=0;modelViewer.style.filter='none';document.querySelector('#css-can').style.filter='none';}});
+        }});
+        let completedBerries = 0;
+        allBerries.forEach((berry) => {
+          const bW=berry.offsetWidth/2,bH=berry.offsetHeight/2;
+          const centerX=window.innerWidth/2 - berry.offsetLeft - bW;
+          const centerY=window.innerHeight/2 - berry.offsetTop - bH;
+          const startAngle=parseFloat(berry.dataset.angle)||0;
+          const currentBaseX=parseFloat(berry.dataset.baseX)||0;
+          const currentBaseY=parseFloat(berry.dataset.baseY)||0;
+          const nextBaseX=(Math.random()-.5)*200;
+          const nextBaseY=(Math.random()-.5)*200;
+          gsap.set(berry,{rotation:startAngle,x:currentBaseX,y:currentBaseY});
+          gsap.timeline().to(berry,{x:centerX,y:centerY,rotation:startAngle+45,scale:.1,opacity:0,duration:.5,ease:'power2.in',onComplete:()=>{
+            berry.querySelector('model-viewer').src = flavor === 'blue' ? BLUEBERRY_GLB : CHERRY_GLB;
+            berry.querySelector('.fruit-placeholder').textContent = flavor === 'blue' ? '🫐' : '🍒';
+            berry.classList.remove('model-loaded');
+            document.querySelector('.hero-center').style.zIndex=50;
+          }}).to(berry,{duration:.3}).to(berry,{onStart:()=>document.querySelector('.hero-center').style.zIndex=45,x:nextBaseX,y:nextBaseY,rotation:startAngle+90,scale:1,opacity:1,duration:.9,ease:'back.out(1.5)',onComplete:()=>{
+            berry.dataset.angle=startAngle+90;
+            berry.dataset.baseX=nextBaseX;
+            berry.dataset.baseY=nextBaseY;
+            berry.dataset.rx=0;berry.dataset.ry=0;
+            completedBerries++;
+            if(completedBerries===allBerries.length) isSwitching=false;
+          }});
+        });
+      } else {
+        setFlavorTexture(flavor);
+        allBerries.forEach(berry=>{berry.querySelector('model-viewer').src=flavor==='blue'?BLUEBERRY_GLB:CHERRY_GLB;berry.querySelector('.fruit-placeholder').textContent=flavor==='blue'?'🫐':'🍒';berry.classList.remove('model-loaded');});
+        isSwitching=false;
+      }
+    }
+    allBerries.forEach(b=>{b.dataset.rx=0;b.dataset.ry=0;b.dataset.angle=Math.random()*360;b.dataset.baseX=0;b.dataset.baseY=0;b.dataset.targetRx=0;b.dataset.targetRy=0;});
+    const mouse={x:0,y:0,px:-1000,py:-1000};
+    const currentMouse={x:0,y:0};
+    window.addEventListener('pointermove',e=>{mouse.x=e.clientX/window.innerWidth-.5;mouse.y=e.clientY/window.innerHeight-.5;mouse.px=e.clientX;mouse.py=e.clientY;},{passive:true});
+    function animate(timeMs){
+      if(!reducedMotion){
+        const time=timeMs*.001;
+        currentMouse.x+=(mouse.x-currentMouse.x)*.05;
+        currentMouse.y+=(mouse.y-currentMouse.y)*.05;
+        modelViewer.cameraOrbit=`${currentMouse.x*40+switchSpin}deg ${90+currentMouse.y*20}deg 380%`;
+        const cssCan=document.querySelector('#css-can');
+        cssCan.style.setProperty('--can-tilt-x',`${currentMouse.x*18+switchSpin}deg`);
+        cssCan.style.setProperty('--can-tilt-y',`${currentMouse.y*-10}deg`);
+        berriesFG.style.transform=`translate(${currentMouse.x*60}px,${currentMouse.y*60}px)`;
+        berriesBG.style.transform=`translate(${currentMouse.x*-30}px,${currentMouse.y*-30}px)`;
+        leavesBG.style.transform=`translate(${currentMouse.x*-15}px,${currentMouse.y*-15}px)`;
+        if(!isSwitching){
+          allBerries.forEach((berry,i)=>{
+            const rect=berry.getBoundingClientRect();const berryX=rect.left+rect.width/2,berryY=rect.top+rect.height/2;
+            const diffX=mouse.px-berryX,diffY=mouse.py-berryY,distance=Math.hypot(diffX,diffY);
+            let targetRx=0,targetRy=0,speedMult=1;
+            if(distance<400 && distance>1){const force=(400-distance)/400;targetRx=diffX/distance*force*-80;targetRy=diffY/distance*force*-80;speedMult=1+force*5;}
+            let rx=parseFloat(berry.dataset.rx)||0,ry=parseFloat(berry.dataset.ry)||0,angle=parseFloat(berry.dataset.angle)||0;
+            const baseX=parseFloat(berry.dataset.baseX)||0,baseY=parseFloat(berry.dataset.baseY)||0;
+            rx+=(targetRx-rx)*.1;ry+=(targetRy-ry)*.1;angle+=.2*speedMult;
+            berry.dataset.rx=rx;berry.dataset.ry=ry;berry.dataset.angle=angle;
+            const dur=[5,7,6,8,5.5,6.5,9,11,10][i%9],phase=(time+i*.7)*(Math.PI*2/dur);
+            const floatY=Math.sin(phase)*15,floatAngle=Math.cos(phase)*6;
+            berry.style.transform=`translate(calc(${rx+baseX}px), calc(${ry+baseY}px + ${floatY}px)) rotate(calc(${angle}deg + ${floatAngle}deg))`;
+          });
+        }
+        document.querySelectorAll('.leaf').forEach((leaf,i)=>{const dur=10+i*2,phase=(time+i*1.2)*(Math.PI*2/dur);leaf.style.transform=`translate(${Math.cos(phase*.5)*15}px, ${Math.sin(phase)*20}px) rotate(${Math.sin(phase*.3)*15}deg)`;});
+      }
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+    const bubblesContainer=document.getElementById('bubbles-container');
+    function createBubble(){
+      if(reducedMotion || document.hidden) return;
+      const bubble=document.createElement('img');
+      bubble.src=BUBBLE_PNG;bubble.className='bubble-img';bubble.alt='';
+      const size=Math.random()*20+10+'px';bubble.style.width=size;bubble.style.height='auto';
+      bubble.style.left=Math.random()*100+'%';bubble.style.bottom='-50px';bubble.style.opacity=Math.random()*.4+.2;
+      const duration=Math.random()*6+4;bubble.style.animation=`floatUpImg ${duration}s linear forwards`;
+      bubble.addEventListener('error',()=>{bubble.removeAttribute('src');bubble.style.height=size;bubble.style.border='1px solid rgba(230,255,255,.48)';bubble.style.borderRadius='50%';bubble.style.background='radial-gradient(circle at 25% 20%,rgba(255,255,255,.3),rgba(255,255,255,.02) 70%)';},{once:true});
+      bubblesContainer.appendChild(bubble);setTimeout(()=>bubble.remove(),duration*1000);
+    }
+    setInterval(createBubble,400);
+
+    const backdrop=document.getElementById('dialog-backdrop');
+    const heading=document.getElementById('dialog-heading');
+    const kicker=document.getElementById('dialog-kicker');
+    const dialogBody=document.getElementById('dialog-body');
+    const actions=document.getElementById('dialog-actions');
+    const closeDialog=()=>{backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');};
+    document.getElementById('dialog-close').addEventListener('click',closeDialog);
+    backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeDialog();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDialog();});
+    function showDialog(type){
+      actions.innerHTML='';
+      const content={
+        ingredients:{k:'WHAT GOES IN',h:'Less really is more.',p:'A crisp, feel-good concept built around fresh flavors, a sparkling finish and zero added sugar. This is fictional product copy for a portfolio demo.'},
+        taste:{k:'MADE TO DELIGHT',h:'A little sip of wow.',p:'Meet two imagined flavors: Diet Classic for a bright, clean finish and Zero Lime for a cool citrus twist. Choose a flavor card to see the whole scene transform.'},
+        eco:{k:'A BETTER IDEA',h:'Design for tomorrow.',p:'Fizzora imagines recyclable aluminum packaging and mindful product design. These are conceptual brand values, not verified environmental claims about a real product.'},
+        reviews:{k:'YOUR THOUGHTS MATTER',h:'Imagine the buzz.',p:'This is a new portfolio concept, so no customer reviews have been invented. Explore the site and see the interactions for yourself.'},
+        shop:{k:'PICK YOUR FAVORITE',h:'Your flavor, your vibe.',p:'Select your favorite soda concept and watch the product, fruit and atmosphere change. Prices are illustrative; checkout is not enabled in this demo.'},
+        contact:{k:'GET IN TOUCH',h:'Say hello.',p:'Love the look? The form below demonstrates an interactive enquiry experience. It does not send or save personal information.'}
+      }[type];
+      kicker.textContent=content.k;heading.textContent=content.h;
+      dialogBody.innerHTML='<p>'+content.p+'</p>';
+      if(type==='shop'){
+        actions.innerHTML='<button class="dialog-action" data-choose="classic">Try Diet Classic</button><button class="dialog-action" data-choose="blue">Try Zero Lime</button>';
+        actions.querySelectorAll('[data-choose]').forEach(btn=>btn.addEventListener('click',()=>{closeDialog();switchFlavor(btn.dataset.choose);}));
+      } else if(type==='taste'){
+        actions.innerHTML='<button class="dialog-action">Explore both flavors →</button>';
+        actions.querySelector('button').addEventListener('click',()=>{closeDialog();switchFlavor(currentFlavor==='classic'?'blue':'classic');});
+      } else if(type==='contact'){
+        const form=document.createElement('form');form.id='demo-contact-form';form.innerHTML='<label for="contact-name">Name</label><input id="contact-name" placeholder="Your name" required maxlength="80"><label for="contact-email">Email</label><input id="contact-email" type="email" placeholder="you@example.com" required><label for="contact-message">Message</label><textarea id="contact-message" rows="3" placeholder="Tell us about your idea" required maxlength="600"></textarea><p class="dialog-feedback" id="dialog-feedback" role="status"></p><button class="dialog-action" type="submit">Preview enquiry</button>';
+        dialogBody.appendChild(form);
+        form.addEventListener('submit',e=>{e.preventDefault();document.getElementById('dialog-feedback').textContent='Demo preview complete! No details were sent or stored.';form.reset();});
+      }
+      backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');document.getElementById('dialog-close').focus();
+    }
+    document.getElementById('shop-button').addEventListener('click',()=>showDialog('shop'));
+    document.getElementById('contact-button').addEventListener('click',()=>showDialog('contact'));
+    document.getElementById('home-link').addEventListener('click',e=>{e.preventDefault();closeDialog();});
+    document.querySelectorAll('.nav-item').forEach(link=>link.addEventListener('click',e=>{
+      e.preventDefault();
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      link.classList.add('active');
+      if(link.dataset.info==='home')closeDialog();else showDialog(link.dataset.info);
+    }));
+  </script>
+</body>
+</html>
